@@ -4,7 +4,7 @@
 <body>
     Guia de Instalação
 
-    Passo a passo:</h2>
+    Passo a passo:
  Guia de Instalação
 
 Este é um guia resumido sobre como instalar o Flask em seu ambiente:

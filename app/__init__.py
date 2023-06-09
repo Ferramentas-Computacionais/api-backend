@@ -2,8 +2,8 @@ from flask import Flask, Response, request
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 import json
-from app.database import db
-from app.models import usuario
+from app.database import db  
+from app.models import instituicao, produto, usuario
 app = Flask(__name__)
 
 
@@ -17,6 +17,7 @@ db.init_app(app)
 
 with app.app_context():
     # Criar as tabelas no banco de dados
+    db.drop_all()
     db.create_all()
     
 
