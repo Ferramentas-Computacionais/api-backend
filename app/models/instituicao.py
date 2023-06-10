@@ -6,4 +6,6 @@ class Instituicao(db.Model):
     email = db.Column(db.String(100))
     telefone = db.Column(db.String(13))
     cnpj = db.Column(db.String(14))
-    localizacao = db.Column(db.String(200))
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), unique=True)
+
+    

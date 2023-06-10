@@ -4,7 +4,7 @@ from app.database import db
 
 @app.route("/")
 def index():
- 
+ #esse código é só pra teste de conexão
     try:
 
         # Executa uma consulta no banco de dados
