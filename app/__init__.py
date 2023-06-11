@@ -32,6 +32,12 @@ def create_user():
     return user.registrar()
 
 
+@app.route('/login', methods= ['POST'])
+def login():
+    user = UsuarioController()
+    return user.login()
+
+
 
 if __name__ == '__main__':
 
