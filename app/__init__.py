@@ -1,30 +1,37 @@
-from flask import Flask, Response, request
-from flask_marshmallow import Marshmallow
+from flask import Flask, Response, request,current_app
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
 import mysql.connector
 import json
+
+
+from flask_marshmallow import Marshmallow
 from app.database import db  
-from app.models import instituicao, produto, usuario
+
+from app.controllers.usuario_controller import UsuarioController
 
 
 app = Flask(__name__)
-
-from app.controllers import default
+app.debug = True
 
 # Configuração do SQLAlchemy
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/doacoes'
 app.config['SECRET_KEY'] = 'bazinga'
 ma = Marshmallow(app)
 
 db.init_app(app)
-JWTManager(app)
 with app.app_context():
     # Criar as tabelas no banco de dados
-    db.drop_all()
+    #db.drop_all()
     db.create_all()
-    
+
+@app.route('/create-user', methods= ['POST'])
+def create_user():
+    user = UsuarioController()
+    return user.registrar()
+
+
 
 if __name__ == '__main__':
 
