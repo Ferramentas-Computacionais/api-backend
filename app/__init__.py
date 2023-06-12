@@ -2,9 +2,9 @@ from flask import Flask, Response, request,current_app
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 import json
-
-
+from flask_jwt_extended import jwt_required
 from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager
 from app.database import db  
 
 from app.controllers.usuario_controller import UsuarioController
@@ -26,11 +26,12 @@ with app.app_context():
     #db.drop_all()
     db.create_all()
 
+
 @app.route('/create-user', methods= ['POST'])
 def create_user():
     user = UsuarioController()
     return user.registrar()
-
+JWTManager(app)
 
 @app.route('/login', methods= ['POST'])
 def login():
@@ -38,6 +39,10 @@ def login():
     return user.login()
 
 
+@app.route("/")
+@jwt_required()
+def index():
+    return 'testando autenticação jwt'
 
 if __name__ == '__main__':
 
