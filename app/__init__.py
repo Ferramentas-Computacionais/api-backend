@@ -6,8 +6,8 @@ from flask_jwt_extended import jwt_required
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 from app.database import db  
-
 from app.controllers.usuario_controller import UsuarioController
+from app.controllers.instituicao_controller import InstituicaoController
 
 
 app = Flask(__name__)
@@ -22,9 +22,14 @@ ma = Marshmallow(app)
 
 db.init_app(app)
 with app.app_context():
-    # Criar as tabelas no banco de dados
+    # Importar os modelos
+    from app.models.usuario import Usuario
+    from app.models.instituicao import Instituicao
+    from app.models.produto import Produto
+
     #db.drop_all()
     db.create_all()
+
 
 
 @app.route('/create-user', methods= ['POST'])
@@ -39,10 +44,11 @@ def login():
     return user.login()
 
 
-@app.route("/")
+@app.route("/create-instituicao", methods = ['POST'])
 @jwt_required()
 def index():
-    return 'testando autenticação jwt'
+    user = InstituicaoController()
+    return user.registrar()
 
 if __name__ == '__main__':
 

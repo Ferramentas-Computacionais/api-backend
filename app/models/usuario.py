@@ -22,7 +22,7 @@ class Usuario(db.Model):
     def show(self):
         user = {}
 
-        user['id'] = self.id
+        user['id'] = self.id    
         user['username'] = self.username
 
         return user
