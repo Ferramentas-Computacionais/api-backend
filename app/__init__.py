@@ -18,6 +18,8 @@ app.debug = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/doacoes'
 app.config['SECRET_KEY'] = 'bazinga'
+
+
 ma = Marshmallow(app)
 
 db.init_app(app)
@@ -46,7 +48,7 @@ def login():
 
 @app.route("/create-instituicao", methods = ['POST'])
 @jwt_required()
-def index():
+def create_instituicao():
     user = InstituicaoController()
     return user.registrar()
 
