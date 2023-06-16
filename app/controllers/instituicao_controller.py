@@ -1,3 +1,4 @@
+import json
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
@@ -11,19 +12,18 @@ class InstituicaoController:
 
     @jwt_required()
     def registrar(self):
-
-        nome = request.json.get('nome')
-        email = request.json.get('email')
-        telefone = request.json.get('telefone')
-        cnpj = request.json.get('cnpj')
-        latitude = request.json.get('latitude')
-        longitude = request.json.get('longitude')
-        coordenadas = str(longitude)+","+str(latitude)
-        descricao = request.json.get('descricao')
+        data = json.loads(request.form.get('data'))
+        nome = data['nome']
+        email = data['email']
+        telefone = data['telefone']
+        cnpj = data['cnpj']
+        latitude = data['latitude']
+        longitude = data['longitude']
+        descricao = data['descricao']
         usuario_id = get_jwt_identity()
-
-      
-        file = request.files['file']
+        coordenadas = str(longitude)+","+str(latitude)
+        
+        file = request.files['imagem']
         filename = file.filename
         if file:
             filepath = os.path.join(UPLOAD_FOLDER, filename)
