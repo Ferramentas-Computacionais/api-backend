@@ -1,5 +1,7 @@
 from flask import Flask, Response, request,current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 import mysql.connector
 import json
 from flask_jwt_extended import jwt_required
@@ -9,11 +11,14 @@ from app.database import db
 from app.controllers.usuario_controller import UsuarioController
 from app.controllers.instituicao_controller import InstituicaoController
 from app.controllers.produto_controller import AnuncioController
+from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 app.debug = True
+CORS(app, origins='http://localhost:4200')
 
 # Configuração do SQLAlchemy
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/doacoes'
@@ -57,6 +62,9 @@ def read_instituicao(quantidade):
     user = InstituicaoController()
     return user.visualizar_instituicoes_recentes(quantidade)
 
+@app.route('/imagens_logo/<path:filename>')
+def servir_imagem(filename):
+    return send_from_directory('images/logos', filename)
 
 
 @app.route('/create-anuncio', methods=['POST'])

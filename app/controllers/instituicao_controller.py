@@ -7,7 +7,7 @@ from app.database import db
 from app.models.instituicao import Instituicao
 
 UPLOAD_FOLDER = 'app/images/logos'
-
+ADDRESS = 'http://localhost:5000'
 class InstituicaoController:
 
     #@jwt_required()
@@ -28,10 +28,12 @@ class InstituicaoController:
         if file:
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
-            imagem_path = os.path.join(UPLOAD_FOLDER, filename)
+            imagem_path = ADDRESS + "/imagens_logo/" + filename
+
         else:
             
-            imagem_path = 'app/images/logos/default.png'
+            imagem_path = ADDRESS + "/imagens_logo/default.png"
+
 
 
 
