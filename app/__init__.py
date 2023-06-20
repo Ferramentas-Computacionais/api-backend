@@ -47,10 +47,17 @@ def login():
 
 
 @app.route("/create-instituicao", methods = ['POST'])
-@jwt_required()
+#@jwt_required()
 def create_instituicao():
     user = InstituicaoController()
     return user.registrar()
+
+@app.route("/mostrar-instituicao/<int:quantidade>", methods = ['GET'])
+def read_instituicao():
+    user = InstituicaoController()
+    return user.visualizar_instituicoes_recentes()
+
+
 
 @app.route('/create-anuncio', methods=['POST'])
 @jwt_required()

@@ -10,7 +10,7 @@ UPLOAD_FOLDER = 'app/images/logos'
 
 class InstituicaoController:
 
-    @jwt_required()
+    #@jwt_required()
     def registrar(self):
         data = json.loads(request.form.get('data'))
         nome = data['nome']
@@ -20,7 +20,7 @@ class InstituicaoController:
         latitude = data['latitude']
         longitude = data['longitude']
         descricao = data['descricao']
-        usuario_id = get_jwt_identity()
+        usuario_id = 2#get_jwt_identity()
         coordenadas = str(longitude)+","+str(latitude)
         
         file = request.files['imagem']
@@ -49,3 +49,23 @@ class InstituicaoController:
         db.session.commit()
 
         return jsonify({'message': 'Nova Instituição registrada com sucesso'}), 200
+    
+    def visualizar_instituicoes_recentes(quantidade):
+        instituicoes = Instituicao.query.order_by(Instituicao.data_criacao.desc()).limit(quantidade).all()
+        instituicoes_recentes = []
+
+        for instituicao in instituicoes:
+            instituicao_data = {
+                'nome': instituicao.nome,
+                'email': instituicao.email,
+                'telefone': instituicao.telefone,
+                'cnpj': instituicao.cnpj,
+                'coordenadas': instituicao.coordenadas,
+                'imagem': instituicao.imagem,
+                'usuario_id': instituicao.usuario_id,
+                'descricao': instituicao.descricao,
+                'data_criacao': instituicao.data_criacao.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            instituicoes_recentes.append(instituicao_data)
+
+        return jsonify(instituicoes_recentes), 200
