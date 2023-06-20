@@ -53,9 +53,9 @@ def create_instituicao():
     return user.registrar()
 
 @app.route("/mostrar-instituicao/<int:quantidade>", methods = ['GET'])
-def read_instituicao():
+def read_instituicao(quantidade):
     user = InstituicaoController()
-    return user.visualizar_instituicoes_recentes()
+    return user.visualizar_instituicoes_recentes(quantidade)
 
 
 

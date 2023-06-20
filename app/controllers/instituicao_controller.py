@@ -50,7 +50,7 @@ class InstituicaoController:
 
         return jsonify({'message': 'Nova Instituição registrada com sucesso'}), 200
     
-    def visualizar_instituicoes_recentes(quantidade):
+    def visualizar_instituicoes_recentes(self, quantidade):
         instituicoes = Instituicao.query.order_by(Instituicao.data_criacao.desc()).limit(quantidade).all()
         instituicoes_recentes = []
 
