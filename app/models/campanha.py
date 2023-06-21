@@ -10,3 +10,4 @@ class Campanha(db.Model):
     verificado = db.Column(db.Boolean, default=False)
     imagem = db.Column(db.String(255))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), unique=True)
+    usuario = db.relationship('Usuario', backref=db.backref('campanhas'))

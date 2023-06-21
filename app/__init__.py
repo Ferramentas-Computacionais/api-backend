@@ -126,7 +126,21 @@ def renovar_anuncio(anuncio_id):
 
 
 #rotas de campanha
+@app.route('/create-campanha', methods=['POST'])
+#@jwt_required()
+def create_campanha():
+    user = CampanhaController()
+    return user.criar_campanha()
 
+
+@app.route('/imagens_campanha/<path:filename>')
+def servir_imagem_campanha(filename):
+    return send_from_directory('images/campanhas', filename)
+
+@app.route('/mostrar-campanha/<int:quantidade>', methods=['GET'])
+def mostrar_campanha(quantidade):
+    campanha_controller = CampanhaController()
+    return campanha_controller.mostrar_campanhas(quantidade)
 
 if __name__ == '__main__':
 
