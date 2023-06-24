@@ -55,3 +55,20 @@ class CampanhaController:
             campanhas_data.append(campanha_data)
 
         return jsonify(campanhas_data), 200
+    def achar_campanha_por_usuario_id(self, usuario_id):
+            campanha = Campanha.query.filter_by(usuario_id=usuario_id).first()
+            if campanha:
+                campanha_data = {
+                    'id': campanha.id,
+                    'nome': campanha.nome,
+                    'descricao': campanha.descricao,
+                    'data_criacao': campanha.data_criacao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_criacao else None,
+                    'data_expiracao': campanha.data_expiracao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_expiracao else None,
+                    'ativo': campanha.ativo,
+                    'verificado': campanha.verificado,
+                    'imagem': campanha.imagem,
+                    'usuario_id': campanha.usuario_id
+                }
+                return jsonify(campanha_data), 200
+            else:
+                return jsonify({'message': 'Nenhuma campanha encontrada para o usuário'}), 404

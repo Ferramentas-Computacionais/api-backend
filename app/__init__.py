@@ -142,6 +142,11 @@ def mostrar_campanha(quantidade):
     campanha_controller = CampanhaController()
     return campanha_controller.mostrar_campanhas(quantidade)
 
+@app.route('/campanhas/<int:usuario_id>', methods=['GET'])
+def achar_campanha_por_user_id(usuario_id):
+    campanha_controller = CampanhaController()
+    return campanha_controller.achar_campanha_por_usuario_id(usuario_id)
+
 if __name__ == '__main__':
 
     app.run()
