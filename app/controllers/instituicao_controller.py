@@ -51,6 +51,7 @@ class InstituicaoController:
 
         for instituicao in instituicoes:
             instituicao_data = {
+                'id': instituicao.id,
                 'nome': instituicao.nome,
                 'email': instituicao.email,
                 'telefone': instituicao.telefone,
@@ -70,6 +71,7 @@ class InstituicaoController:
 
         if instituicao:
             instituicao_data = {
+                'id': instituicao.id,
                 'nome': instituicao.nome,
                 'email': instituicao.email,
                 'telefone': instituicao.telefone,
