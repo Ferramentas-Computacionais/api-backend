@@ -8,7 +8,7 @@ from app.models.produto import Produto
 import json
 
 UPLOAD_FOLDER = 'app/images/anuncios'
-
+ADDRESS = 'http://localhost:5000'
 class AnuncioController:
 
     
@@ -16,17 +16,17 @@ class AnuncioController:
         data = json.loads(request.form.get('data'))
         nome = data['nome']
         descricao = data['descricao']
-        usuario_id = get_jwt_identity()
+        usuario_id = 1#get_jwt_identity()
         file = request.files['imagem']
-
-        filename = secure_filename(file.filename)
+        filename = file.filename
         if file:
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
-            imagem_path = os.path.join(UPLOAD_FOLDER, filename)
-        else:
-            imagem_path = 'app/images/anuncios/default.png'
+            imagem_path = ADDRESS + "/imagens_anuncio/" + filename
 
+        else:
+            
+            imagem_path = ADDRESS + "/imagens_logo/default.png"
         anuncio = Produto(nome=nome, descricao=descricao, usuario_id=usuario_id, imagem=imagem_path)
 
         db.session.add(anuncio)
@@ -83,10 +83,10 @@ class AnuncioController:
         anuncio = Produto.query.get(anuncio_id)
 
         # Verifica se o anúncio está expirado
-        if anuncio.data_expiracao < datetime.now().date():
+        if anuncio.verificado==False:
             anuncio.desativado = True
             db.session.commit()
-            return jsonify({'error': 'Anúncio expirado'}), 400
+            return jsonify({'error': 'Anúncio não verificado ainda'}), 400
 
         if not anuncio:
             return jsonify({'error': 'Anúncio não encontrado'}), 404

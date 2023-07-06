@@ -80,7 +80,7 @@ def servir_imagem(filename):
 
 #rotas de anuncio
 @app.route('/create-anuncio', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_anuncio():
     user = AnuncioController()
     return user.criar_anuncio()
@@ -105,6 +105,9 @@ def get_anuncio(anuncio_id):
     user = AnuncioController()
     return user.mostrar_anuncio(anuncio_id)
 
+@app.route('/imagens_anuncio/<path:filename>')
+def servir_imagem_anuncio(filename):
+    return send_from_directory('images/anuncios', filename)
 
 @app.route('/listar-anuncios', methods=['GET'])
 def get_anuncios():
