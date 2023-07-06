@@ -94,7 +94,10 @@ class AnuncioController:
         anuncio_data = {
             'id': anuncio.id,
             'nome': anuncio.nome,
-            'descricao': anuncio.descricao
+            'descricao': anuncio.descricao,
+            'data_criacao': anuncio.data_criacao,
+            'imagem': anuncio.imagem
+
         }
 
         return jsonify(anuncio_data), 200
@@ -109,14 +112,22 @@ class AnuncioController:
         return jsonify({'anuncios': [anuncio.to_dict() for anuncio in anuncios]}), 200
 
     def listar_anuncios(self):
-        produtos = Produto.query.filter(Produto.ativo == True, Produto.data_expiracao >= datetime.now().date()).all()
+        produtos = Produto.query.filter(Produto.ativo == True).all()
 
         produtos_data = []
         for produto in produtos:
             produto_data = {
-                'id': produto.id,
-                'nome': produto.nome,
-                'descricao': produto.descricao
+            'id': produto.id,
+            'nome': produto.nome,
+            'descricao': produto.descricao,
+            'data_criacao': produto.data_criacao,
+            'imagem': produto.imagem,
+            'instituicao': {
+                'id': produto.usuario.instituicao.id,
+                'nome': produto.usuario.instituicao.nome,
+                'endereco': produto.usuario.instituicao.coordenadas,
+                # Adicione outros campos da instituição que você deseja incluir no JSON
+            }
             }
             produtos_data.append(produto_data)
 
