@@ -96,7 +96,12 @@ class AnuncioController:
             'nome': anuncio.nome,
             'descricao': anuncio.descricao,
             'data_criacao': anuncio.data_criacao,
-            'imagem': anuncio.imagem
+            'imagem': anuncio.imagem,
+            'instituicao': {
+                'id': anuncio.usuario.instituicao.id,
+                'nome': anuncio.usuario.instituicao.nome,
+                'endereco': anuncio.usuario.instituicao.coordenadas,
+            }
 
         }
 
