@@ -6,9 +6,9 @@ import os
 from app.database import db
 from app.models.produto import Produto
 import json
+from app.constants import ADDRESS
 
 UPLOAD_FOLDER = 'app/images/anuncios'
-ADDRESS = 'http://localhost:5000'
 class AnuncioController:
 
     

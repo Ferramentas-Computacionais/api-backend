@@ -5,9 +5,9 @@ from werkzeug.utils import secure_filename
 import os
 from app.database import db
 from app.models.instituicao import Instituicao
+from app.constants import ADDRESS
 
 UPLOAD_FOLDER = 'app/images/logos'
-ADDRESS = 'http://localhost:5000'
 class InstituicaoController:
     #TODO fazer as funções de edição de instituição para o usuário
     #@jwt_required()

@@ -18,7 +18,6 @@ from flask import Flask, send_from_directory
 app = Flask(__name__)
 app.debug = True
 CORS(app, origins='http://localhost:4200')
-
 # Configuração do SQLAlchemy
 
 

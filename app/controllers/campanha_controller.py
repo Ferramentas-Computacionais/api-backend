@@ -3,10 +3,10 @@ from flask_jwt_extended import get_jwt_identity
 from werkzeug.utils import secure_filename
 from app.database import db
 from app.models.campanha import Campanha
+from app.constants import ADDRESS
 import json
 import os
 UPLOAD_FOLDER = 'app/images/campanhas'
-ADDRESS = 'http://localhost:5000'
 class CampanhaController:
 
     def criar_campanha(self):
