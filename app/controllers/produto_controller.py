@@ -13,13 +13,12 @@ class AnuncioController:
 
     
     def criar_anuncio(self):
-        data = json.loads(request.form.get('data'))
-        nome = data['nome']
-        descricao = data['descricao']
-        usuario_id = 1#get_jwt_identity()
-        file = request.files['imagem']
-        filename = file.filename
+        nome = request.form.get('nome')
+        descricao = request.form.get('descricao')
+        usuario_id = get_jwt_identity()
+        file = request.files.get('imagem')
         if file:
+            filename = file.filename
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
             imagem_path = ADDRESS + "/imagens_anuncio/" + filename
@@ -84,7 +83,6 @@ class AnuncioController:
 
         # Verifica se o anúncio está expirado
         if anuncio.verificado==False:
-            anuncio.desativado = True
             db.session.commit()
             return jsonify({'error': 'Anúncio não verificado ainda'}), 400
 
@@ -117,7 +115,7 @@ class AnuncioController:
         return jsonify({'anuncios': [anuncio.to_dict() for anuncio in anuncios]}), 200
 
     def listar_anuncios(self):
-        produtos = Produto.query.filter(Produto.ativo == True).all()
+        produtos = Produto.query.filter(Produto.verificado == True).all()
 
         produtos_data = []
         for produto in produtos:
@@ -127,6 +125,7 @@ class AnuncioController:
             'descricao': produto.descricao,
             'data_criacao': produto.data_criacao,
             'imagem': produto.imagem,
+            
             'instituicao': {
                 'id': produto.usuario.instituicao.id,
                 'nome': produto.usuario.instituicao.nome,
@@ -138,25 +137,25 @@ class AnuncioController:
 
         return jsonify(produtos_data), 200
     
+    def listar_anuncios_por_usuario(self, usuario_id):
+        produtos = Produto.query.filter_by(usuario_id=usuario_id).all()
 
-    def renovar_anuncio(self, anuncio_id):
-        produto = Produto.query.get(anuncio_id)
+        produtos_data = []
+        for produto in produtos:
+            produto_data = {
+                'id': produto.id,
+                'nome': produto.nome,
+                'descricao': produto.descricao,
+                'imagem': produto.imagem,
+                'verificado': produto.verificado,
+                'instituicao': {
+                    'id': produto.usuario.instituicao.id,
+                    'nome': produto.usuario.instituicao.nome,
+                    'endereco': produto.usuario.instituicao.coordenadas,
+                }
+            }
+            produtos_data.append(produto_data)
 
-        if not produto:
-            return jsonify({'error': 'Anúncio não encontrado'}), 404
+        return jsonify(produtos_data), 200
+    
 
-        # Verifica se o usuário autenticado é o proprietário do anúncio
-        elif produto.usuario_id != get_jwt_identity():
-            return jsonify({'error': 'Acesso não autorizado'}), 401
-
-        # Verifica se o anúncio já está expirado
-        elif produto.data_expiracao >= datetime.now().date():
-            return jsonify({'error': 'O anúncio ainda está ativo'}), 400
-        else:
-            # Define a nova data de expiração para 14 dias a partir da data atual
-            nova_data_expiracao = datetime.now().date() + timedelta(days=14)
-            produto.data_expiracao = nova_data_expiracao
-            produto.ativo = True
-            db.session.commit()
-
-            return jsonify({'message': 'Anúncio renovado com sucesso'}),200
