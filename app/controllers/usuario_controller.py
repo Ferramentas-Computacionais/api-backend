@@ -41,13 +41,14 @@ class UsuarioController():
             access_token = create_access_token(identity=user.id)
             refresh_token = create_refresh_token(
                 identity=user.id,
-                expires_delta=timedelta(seconds=1000)
+                expires_delta=timedelta(seconds=100000)
 
              )
             return jsonify({
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'message': 'sucess'
+                'usuario_id': user.id,
+                'message': 'sucess',
             }),200
         else:
             return jsonify({

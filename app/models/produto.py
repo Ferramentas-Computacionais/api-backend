@@ -6,7 +6,6 @@ class Produto(db.Model):
     nome = db.Column(db.String(100))
     descricao = db.Column(db.String(255))
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
-    ativo = db.Column(db.Boolean, default=False)
     verificado = db.Column(db.Boolean, default=False)
     imagem = db.Column(db.String(255))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
