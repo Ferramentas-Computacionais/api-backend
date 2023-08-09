@@ -37,7 +37,7 @@ with app.app_context():
     from app.models.produto import Produto
     from app.models.campanha import Campanha
 
-
+    #pfvr, n descomentem essa linha no servidor de deploy :) S2
     #db.drop_all()
     db.create_all()
 
@@ -55,10 +55,14 @@ def login():
     user = UsuarioController()
     return user.login()
 
-
+@app.route('/refresh-token', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh_token():
+    user = UsuarioController()
+    return user.refresh_token
 #rotas de instituição
 @app.route("/create-instituicao", methods = ['POST'])
-#@jwt_required()
+@jwt_required()
 def create_instituicao():
     user = InstituicaoController()
     return user.registrar()
