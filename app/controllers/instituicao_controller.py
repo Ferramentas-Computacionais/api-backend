@@ -5,9 +5,9 @@ from werkzeug.utils import secure_filename
 import os
 from app.database import db
 from app.models.instituicao import Instituicao
-from app.constants import ADDRESS
+from app.constants import ADDRESS, UPLOAD_FOLDER
 
-UPLOAD_FOLDER = 'app/images/logos'
+FOLDER = UPLOAD_FOLDER + 'imagens_logo'
 class InstituicaoController:
     #TODO fazer as funções de edição de instituição para o usuário
     #@jwt_required()
@@ -26,7 +26,7 @@ class InstituicaoController:
         file = request.files['imagem']
         filename = file.filename
         if file:
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filepath = os.path.join(FOLDER, filename)
             file.save(filepath)
             imagem_path = ADDRESS + "/imagens_logo/" + filename
 

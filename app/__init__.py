@@ -141,7 +141,7 @@ def renovar_anuncio(anuncio_id):
 
 #rotas de campanha
 @app.route('/create-campanha', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def create_campanha():
     user = CampanhaController()
     return user.criar_campanha()

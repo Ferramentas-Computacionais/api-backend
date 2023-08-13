@@ -3,23 +3,22 @@ from flask_jwt_extended import get_jwt_identity
 from werkzeug.utils import secure_filename
 from app.database import db
 from app.models.campanha import Campanha
-from app.constants import ADDRESS
+from app.constants import ADDRESS,UPLOAD_FOLDER
 import json
 import os
-UPLOAD_FOLDER = 'app/images/campanhas'
+FOLDER =UPLOAD_FOLDER +'/imagens_campanha'
 class CampanhaController:
 
     def criar_campanha(self):
-        data = json.loads(request.form.get('data'))
-        nome = data['nome']
-        descricao = data['descricao']
-        usuario_id = 2#get_jwt_identity()
-        file = request.files['imagem']
+      
+        nome =  request.form.get('nome')
+        descricao =  request.form.get('descricao')
+        file =  request.files.get('imagem')
+        usuario_id = get_jwt_identity()
 
-        filename = secure_filename(file.filename)
-        filename = file.filename
         if file:
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filename = file.filename
+            filepath = os.path.join(FOLDER, filename)
             file.save(filepath)
             imagem_path = ADDRESS + "/imagens_campanha/" + filename
 
@@ -45,9 +44,7 @@ class CampanhaController:
                 'id': campanha.id,
                 'nome': campanha.nome,
                 'descricao': campanha.descricao,
-                'data_criacao': campanha.data_criacao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_criacao else None,
-                'data_expiracao': campanha.data_expiracao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_expiracao else None,
-                'ativo': campanha.ativo,
+                
                 'verificado': campanha.verificado,
                 'imagem': campanha.imagem,
                 'usuario_id': campanha.usuario_id
@@ -57,18 +54,20 @@ class CampanhaController:
         return jsonify(campanhas_data), 200
     def achar_campanha_por_usuario_id(self, usuario_id):
             campanha = Campanha.query.filter_by(usuario_id=usuario_id).first()
+            campanha_data = []
+
             if campanha:
-                campanha_data = {
+                campanhas_data = {
                     'id': campanha.id,
                     'nome': campanha.nome,
                     'descricao': campanha.descricao,
-                    'data_criacao': campanha.data_criacao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_criacao else None,
-                    'data_expiracao': campanha.data_expiracao.strftime('%Y-%m-%d %H:%M:%S') if campanha.data_expiracao else None,
-                    'ativo': campanha.ativo,
+                    
                     'verificado': campanha.verificado,
                     'imagem': campanha.imagem,
                     'usuario_id': campanha.usuario_id
                 }
+                campanha_data.append(campanhas_data)
+
                 return jsonify(campanha_data), 200
             else:
                 return jsonify({'message': 'Nenhuma campanha encontrada para o usuário'}), 404

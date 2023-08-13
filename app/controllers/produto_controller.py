@@ -6,9 +6,9 @@ import os
 from app.database import db
 from app.models.produto import Produto
 import json
-from app.constants import ADDRESS
+from app.constants import ADDRESS,UPLOAD_FOLDER
 
-UPLOAD_FOLDER = 'app/images/anuncios'
+FOLDER = UPLOAD_FOLDER + '/imagens_anuncio'
 class AnuncioController:
 
     
@@ -19,7 +19,7 @@ class AnuncioController:
         file = request.files.get('imagem')
         if file:
             filename = file.filename
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filepath = os.path.join(FOLDER, filename)
             file.save(filepath)
             imagem_path = ADDRESS + "/imagens_anuncio/" + filename
 
