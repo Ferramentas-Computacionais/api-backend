@@ -48,6 +48,8 @@ class UsuarioController():
                 'access_token': access_token,
                 'refresh_token': refresh_token,
                 'usuario_id': user.id,
+                'usuario_nome': user.username,
+
                 'message': 'sucess',
             }),200
         else:
