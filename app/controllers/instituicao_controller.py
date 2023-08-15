@@ -7,23 +7,20 @@ from app.database import db
 from app.models.instituicao import Instituicao
 from app.constants import ADDRESS, UPLOAD_FOLDER
 
-FOLDER = UPLOAD_FOLDER + 'imagens_logo'
+FOLDER = UPLOAD_FOLDER + '/imagens_logo'
 class InstituicaoController:
     #TODO fazer as funções de edição de instituição para o usuário
     #@jwt_required()
     def registrar(self):
-        data = json.loads(request.form.get('data'))
-        nome = data['nome']
-        email = data['email']
-        telefone = data['telefone']
-        cnpj = data['cnpj']
-        latitude = data['latitude']
-        longitude = data['longitude']
-        descricao = data['descricao']
-        usuario_id = 3#get_jwt_identity()
-        coordenadas = str(longitude)+","+str(latitude)
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        telefone = request.form.get('telefone')
+        cnpj = request.form.get('cnpj')
+        descricao = request.form.get('descricao')
+        usuario_id = get_jwt_identity()
+        coordenadas = request.form.get('coordenadas')
         
-        file = request.files['imagem']
+        file = request.files.get('imagem')
         filename = file.filename
         if file:
             filepath = os.path.join(FOLDER, filename)
@@ -86,4 +83,12 @@ class InstituicaoController:
             return jsonify(instituicao_data), 200
         else:
             return jsonify({'message': 'Instituição não encontrada'}), 404
+        
+    def verificar_instituicao(self, usuario_id):
+        existing_instituicao = Instituicao.query.filter_by(usuario_id=usuario_id).first()
+
+        if existing_instituicao:
+            return jsonify({'message': 'O usuário já possui uma instituição registrada'}), 200
+        else:
+            return jsonify({'message': 'O usuário ainda não possui uma instituição registrada'}), 404
 

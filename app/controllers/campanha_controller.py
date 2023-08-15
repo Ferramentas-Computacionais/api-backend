@@ -3,10 +3,13 @@ from flask_jwt_extended import get_jwt_identity
 from werkzeug.utils import secure_filename
 from app.database import db
 from app.models.campanha import Campanha
-from app.constants import ADDRESS,UPLOAD_FOLDER
+from app.constants import ADDRESS,UPLOAD_FOLDER, ID_ADMIN
 import json
 import os
+import random
+
 FOLDER =UPLOAD_FOLDER +'/imagens_campanha'
+
 class CampanhaController:
 
     def criar_campanha(self):
@@ -36,15 +39,19 @@ class CampanhaController:
         return jsonify({'message': 'Campanha criado com sucesso'}), 200
     
     def mostrar_campanhas(self, quantidade):
-        campanhas = Campanha.query.order_by(Campanha.id.desc()).limit(quantidade).all()
+        campanhas_verificadas = Campanha.query.filter_by(verificado=True).all()
+
+        quantidade = min(quantidade, len(campanhas_verificadas))
+        
+        campanhas_exibicao = random.sample(campanhas_verificadas, quantidade)
+
         campanhas_data = []
 
-        for campanha in campanhas:
+        for campanha in campanhas_exibicao:
             campanha_data = {
                 'id': campanha.id,
                 'nome': campanha.nome,
                 'descricao': campanha.descricao,
-                
                 'verificado': campanha.verificado,
                 'imagem': campanha.imagem,
                 'usuario_id': campanha.usuario_id
@@ -52,6 +59,30 @@ class CampanhaController:
             campanhas_data.append(campanha_data)
 
         return jsonify(campanhas_data), 200
+
+
+    def mostrar_campanhas_admin(self):
+        usuario_id = get_jwt_identity()
+        
+        if usuario_id == ID_ADMIN:
+            campanhas = Campanha.query.filter_by(verificado=False).all()
+            campanhas_data = []
+
+            for campanha in campanhas:
+                campanha_data = {
+                    'id': campanha.id,
+                    'nome': campanha.nome,
+                    'descricao': campanha.descricao,
+                    'verificado': campanha.verificado,
+                    'imagem': campanha.imagem,
+                    'usuario_id': campanha.usuario_id
+                }
+                campanhas_data.append(campanha_data)
+
+            return jsonify(campanhas_data), 200
+        else:
+            return jsonify({'message': 'Acesso não autorizado'}), 403
+
     def achar_campanha_por_usuario_id(self, usuario_id):
             campanha = Campanha.query.filter_by(usuario_id=usuario_id).first()
             campanha_data = []

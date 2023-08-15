@@ -3,28 +3,30 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from datetime import timedelta
 from app.database import db
 from app.models.usuario import Usuario
+from app.constants import ID_ADMIN
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class UsuarioController():
 
     def registrar(self):
+        usuario_id = get_jwt_identity()
 
-        username =request.json.get('username')
-        password =request.json.get('password')
+        if usuario_id != ID_ADMIN:
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+
+        username = request.json.get('username')
+        password = request.json.get('password')
 
         existing_user = Usuario.query.filter_by(username=username).first()
         if existing_user:
             return jsonify({'error': 'Nome de usuário já está em uso'}), 400
+
         # Criar um novo usuário
-    
         user = Usuario(username, password)
         user.gen_hash()
         
- 
-        res = db.session.add(user)
-
+        db.session.add(user)
         db.session.commit()
-        
-
 
         return jsonify({'message': 'Usuário criado com sucesso'}), 200
     

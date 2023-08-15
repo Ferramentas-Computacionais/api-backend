@@ -6,7 +6,7 @@ import os
 from app.database import db
 from app.models.produto import Produto
 import json
-from app.constants import ADDRESS,UPLOAD_FOLDER
+from app.constants import ADDRESS,UPLOAD_FOLDER, ID_ADMIN
 
 FOLDER = UPLOAD_FOLDER + '/imagens_anuncio'
 class AnuncioController:
@@ -158,4 +158,47 @@ class AnuncioController:
 
         return jsonify(produtos_data), 200
     
+
+    def listar_anuncios_admin(self):
+        usuario_id = get_jwt_identity()
+        if usuario_id == ID_ADMIN:
+            produtos = Produto.query.filter_by(verificado=False).all()
+
+            produtos_data = []
+            for produto in produtos:
+                produto_data = {
+                'id': produto.id,
+                'nome': produto.nome,
+                'descricao': produto.descricao,
+                'data_criacao': produto.data_criacao,
+                'imagem': produto.imagem,
+                
+                'instituicao': {
+                    'id': produto.usuario.instituicao.id,
+                    'nome': produto.usuario.instituicao.nome,
+                    'endereco': produto.usuario.instituicao.coordenadas,
+                    # Adicione outros campos da instituição que você deseja incluir no JSON
+                }
+                }
+                produtos_data.append(produto_data)
+
+            return jsonify(produtos_data), 200
+        else:
+            return jsonify({'message': 'anuncios não mostrados com sucesso'}), 404
+        
+
+    def verificar_anuncio_admin(self, anuncio_id):
+        anuncio = Produto.query.get(anuncio_id)
+        usuario_id = get_jwt_identity()
+
+        if not anuncio:
+            return jsonify({'error': 'Anúncio não encontrado'}), 404
+
+        if usuario_id != ID_ADMIN:
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+
+        anuncio.verificado = True  # Define o campo "verificado" como True
+        db.session.commit()
+
+        return jsonify({'message': 'Anúncio verificado com sucesso'}), 200
 

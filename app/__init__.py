@@ -45,7 +45,9 @@ with app.app_context():
 #TODO organizar essas rotas (tá muito bagunçado)
 
 #rotas de user
+
 @app.route('/create-user', methods= ['POST'])
+@jwt_required()
 def create_user():
     user = UsuarioController()
     return user.registrar()
@@ -76,6 +78,11 @@ def read_instituicao(quantidade):
 def read_instituicao_id(id):
     user = InstituicaoController()
     return user.visualizar_instituicao_id(id)
+
+@app.route("/verificar_instituicao/<int:id>", methods = ['GET'])
+def verificar_instituicao(id):
+    user = InstituicaoController()
+    return user.verificar_instituicao(id)
 
 @app.route('/imagens_logo/<path:filename>')
 def servir_imagem(filename):
@@ -120,11 +127,22 @@ def get_anuncios():
 
 @app.route('/listar-anuncios-usuario/<int:usuario_id>', methods=['GET'])
 @jwt_required()
-
 def get_anuncios_user_id(usuario_id):
     user = AnuncioController()
     return user.listar_anuncios_por_usuario(usuario_id)
 
+
+@app.route('/anuncios_admin', methods=['GET'])
+@jwt_required()
+def get_anuncios_admin():
+    user = AnuncioController()
+    return user.listar_anuncios_admin()
+
+@app.route('/verificar_anuncios_admin/<int:anuncio_id>', methods=['GET'])
+@jwt_required()
+def verificar_anuncios_admin(anuncio_id):
+    user = AnuncioController()
+    return user.verificar_anuncio_admin(anuncio_id)
 
 @app.route('/anuncios-recentes', methods=['GET'])
 def get_anuncios_recentes():
@@ -160,6 +178,12 @@ def mostrar_campanha(quantidade):
 def achar_campanha_por_user_id(usuario_id):
     campanha_controller = CampanhaController()
     return campanha_controller.achar_campanha_por_usuario_id(usuario_id)
+
+@app.route('/campanhas_admin', methods=['GET'])
+@jwt_required()
+def campanhas_admin():
+    campanha_controller = CampanhaController()
+    return campanha_controller.mostrar_campanhas_admin()
 
 if __name__ == '__main__':
 
