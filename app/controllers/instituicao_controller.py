@@ -25,7 +25,7 @@ class InstituicaoController:
         if file:
             filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
-            imagem_path = ADDRESS + "/imagense_logo/" + filename
+            imagem_path = ADDRESS + "/imagens_logo/" + filename
 
         else:
             
