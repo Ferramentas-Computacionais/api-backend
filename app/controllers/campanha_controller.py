@@ -3,12 +3,12 @@ from flask_jwt_extended import get_jwt_identity
 from werkzeug.utils import secure_filename
 from app.database import db
 from app.models.campanha import Campanha
-from app.constants import ADDRESS,UPLOAD_FOLDER, ID_ADMIN
+from app.constants import ADDRESS, ID_ADMIN
 import json
 import os
 import random
 
-FOLDER =UPLOAD_FOLDER +'/imagens_campanha'
+UPLOAD_FOLDER = 'app/images/campanhas'
 
 class CampanhaController:
 
@@ -21,7 +21,7 @@ class CampanhaController:
 
         if file:
             filename = file.filename
-            filepath = os.path.join(FOLDER, filename)
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
             file.save(filepath)
             imagem_path = ADDRESS + "/imagens_campanha/" + filename
 
