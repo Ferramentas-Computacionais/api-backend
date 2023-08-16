@@ -126,10 +126,15 @@ def get_anuncios():
     return user.listar_anuncios()
 
 @app.route('/listar-anuncios-usuario/<int:usuario_id>', methods=['GET'])
-@jwt_required()
 def get_anuncios_user_id(usuario_id):
     user = AnuncioController()
     return user.listar_anuncios_por_usuario(usuario_id)
+
+@app.route('/listar-anuncios-usuario_admin/<int:usuario_id>', methods=['GET'])
+@jwt_required()
+def get_anuncios_user_id_admin(usuario_id):
+    user = AnuncioController()
+    return user.listar_anuncios_por_usuario_admin(usuario_id)
 
 
 @app.route('/anuncios_admin', methods=['GET'])
@@ -178,6 +183,12 @@ def mostrar_campanha(quantidade):
 def achar_campanha_por_user_id(usuario_id):
     campanha_controller = CampanhaController()
     return campanha_controller.achar_campanha_por_usuario_id(usuario_id)
+
+@app.route('/campanhas_admin/<int:usuario_id>', methods=['GET'])
+@jwt_required()
+def achar_campanha_por_user_id_admin(usuario_id):
+    campanha_controller = CampanhaController()
+    return campanha_controller.achar_campanha_por_usuario_id_admin(usuario_id)
 
 @app.route('/campanhas_admin', methods=['GET'])
 @jwt_required()

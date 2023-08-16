@@ -142,6 +142,27 @@ class AnuncioController:
         return jsonify(produtos_data), 200
     
     def listar_anuncios_por_usuario(self, usuario_id):
+        produtos = Produto.query.filter_by(usuario_id=usuario_id, verificado=True).all()
+
+        produtos_data = []
+        for produto in produtos:
+            produto_data = {
+                'id': produto.id,
+                'nome': produto.nome,
+                'descricao': produto.descricao,
+                'imagem': produto.imagem,
+                'verificado': produto.verificado,
+                'instituicao': {
+                    'id': produto.usuario.instituicao.id,
+                    'nome': produto.usuario.instituicao.nome,
+                    'endereco': produto.usuario.instituicao.coordenadas,
+                }
+            }
+            produtos_data.append(produto_data)
+
+        return jsonify(produtos_data), 200
+    
+    def listar_anuncios_por_usuario_admin(self, usuario_id):
         produtos = Produto.query.filter_by(usuario_id=usuario_id).all()
 
         produtos_data = []

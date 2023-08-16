@@ -69,7 +69,7 @@ class InstituicaoController:
         return jsonify(instituicoes_recentes), 200
     
     def visualizar_instituicao_id(self, id):
-        instituicao = Instituicao.query.get(id)
+        instituicao = Instituicao.query.filter_by(usuario_id=id).first()
 
         if instituicao:
             instituicao_data = {

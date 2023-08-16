@@ -88,6 +88,26 @@ class CampanhaController:
             return jsonify({'message': 'Acesso não autorizado'}), 403
 
     def achar_campanha_por_usuario_id(self, usuario_id):
+            campanha = Campanha.query.filter_by(usuario_id=usuario_id, verificado=True).first()
+            campanha_data = []
+
+            if campanha:
+                campanhas_data = {
+                    'id': campanha.id,
+                    'nome': campanha.nome,
+                    'descricao': campanha.descricao,
+                    
+                    'verificado': campanha.verificado,
+                    'imagem': campanha.imagem,
+                    'usuario_id': campanha.usuario_id
+                }
+                campanha_data.append(campanhas_data)
+
+                return jsonify(campanha_data), 200
+            else:
+                return jsonify({'message': 'Nenhuma campanha encontrada para o usuário'}), 404
+            
+    def achar_campanha_por_usuario_id_admin(self, usuario_id):
             campanha = Campanha.query.filter_by(usuario_id=usuario_id).first()
             campanha_data = []
 
@@ -106,3 +126,5 @@ class CampanhaController:
                 return jsonify(campanha_data), 200
             else:
                 return jsonify({'message': 'Nenhuma campanha encontrada para o usuário'}), 404
+            
+    
