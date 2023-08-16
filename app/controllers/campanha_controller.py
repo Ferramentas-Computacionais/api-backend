@@ -7,7 +7,8 @@ from app.constants import ADDRESS, ID_ADMIN
 import json
 import os
 import random
-
+from datetime import datetime
+import uuid
 UPLOAD_FOLDER = 'app/images/campanhas'
 
 class CampanhaController:
@@ -20,10 +21,13 @@ class CampanhaController:
         usuario_id = get_jwt_identity()
 
         if file:
-            filename = file.filename
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            random_id = uuid.uuid4().hex[:6]  # Gera um ID aleatório de 6 caracteres
+            unique_filename = f"{timestamp}_{random_id}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
             file.save(filepath)
-            imagem_path = ADDRESS + "/imagens_campanha/" + filename
+            imagem_path = ADDRESS + "/imagens_campanha/" + unique_filename
 
         else:
             

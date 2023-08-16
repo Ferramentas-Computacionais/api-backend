@@ -6,7 +6,8 @@ import os
 from app.database import db
 from app.models.instituicao import Instituicao
 from app.constants import ADDRESS
-
+from datetime import datetime
+import uuid
 UPLOAD_FOLDER = 'app/images/logos'
 class InstituicaoController:
     #TODO fazer as funções de edição de instituição para o usuário
@@ -21,11 +22,15 @@ class InstituicaoController:
         coordenadas = request.form.get('coordenadas')
         
         file = request.files.get('imagem')
-        filename = file.filename
+
         if file:
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            random_id = uuid.uuid4().hex[:6]  # Gera um ID aleatório de 6 caracteres
+            unique_filename = f"{timestamp}_{random_id}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
             file.save(filepath)
-            imagem_path = ADDRESS + "/imagens_logo/" + filename
+            imagem_path = ADDRESS + "/imagens_logo/" + unique_filename
 
         else:
             

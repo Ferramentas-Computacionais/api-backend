@@ -7,7 +7,8 @@ from app.database import db
 from app.models.produto import Produto
 import json
 from app.constants import ADDRESS, ID_ADMIN
-
+from datetime import datetime
+import uuid
 UPLOAD_FOLDER = 'app/images/anuncios'
 class AnuncioController:
 
@@ -18,10 +19,13 @@ class AnuncioController:
         usuario_id = get_jwt_identity()
         file = request.files.get('imagem')
         if file:
-            filename = file.filename
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            filename = secure_filename(file.filename)
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            random_id = uuid.uuid4().hex[:6]  # Gera um ID aleatório de 6 caracteres
+            unique_filename = f"{timestamp}_{random_id}_{filename}"
+            filepath = os.path.join(UPLOAD_FOLDER, unique_filename)
             file.save(filepath)
-            imagem_path = ADDRESS + "/imagens_anuncio/" + filename
+            imagem_path = ADDRESS + "/imagens_anuncio/" + unique_filename
 
         else:
             
