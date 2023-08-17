@@ -63,6 +63,21 @@ class CampanhaController:
             campanhas_data.append(campanha_data)
 
         return jsonify(campanhas_data), 200
+    
+    def excluir_campanha(self, campanha_id):
+        campanha = Campanha.query.get(campanha_id)
+
+        if not campanha:
+            return jsonify({'error': 'campanha não encontrado'}), 404
+
+        # Verifica se o usuário autenticado é o proprietário do campanha
+        if campanha.usuario_id != get_jwt_identity():
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+
+        db.session.delete(campanha)
+        db.session.commit()
+
+        return jsonify({'message': 'campanha excluído com sucesso'}), 200
 
 
     def mostrar_campanhas_admin(self):
@@ -126,5 +141,18 @@ class CampanhaController:
                 return jsonify(campanha_data), 200
             else:
                 return jsonify({'message': 'Nenhuma campanha encontrada para o usuário'}), 404
-            
+    def verificar_campanha_admin(self, campanha_id):
+        campanha = Campanha.query.get(campanha_id)
+        usuario_id = get_jwt_identity()
+
+        if not campanha:
+            return jsonify({'error': 'campanha não encontrada'}), 404
+
+        if usuario_id != ID_ADMIN:
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+
+        campanha.verificado = True  # Define o campo "verificado" como True
+        db.session.commit()
+
+        return jsonify({'message': 'campanha verificada com sucesso'}), 200
     

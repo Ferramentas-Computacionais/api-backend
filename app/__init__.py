@@ -169,6 +169,11 @@ def create_campanha():
     user = CampanhaController()
     return user.criar_campanha()
 
+@app.route('/delete-campanha/<int:campanha_id>', methods=['DELETE'])
+@jwt_required()
+def delete_campanha(campanha_id):
+    user = CampanhaController()
+    return user.excluir_campanha(campanha_id)
 
 @app.route('/imagens_campanha/<path:filename>')
 def servir_imagem_campanha(filename):
@@ -189,6 +194,12 @@ def achar_campanha_por_user_id(usuario_id):
 def achar_campanha_por_user_id_admin(usuario_id):
     campanha_controller = CampanhaController()
     return campanha_controller.achar_campanha_por_usuario_id_admin(usuario_id)
+
+@app.route('/verificar_campanha_admin/<int:campanha_id>', methods=['GET'])
+@jwt_required()
+def verificar_campanha_admin(campanha_id):
+    user = CampanhaController()
+    return user.verificar_campanha_admin(campanha_id)
 
 @app.route('/campanhas_admin', methods=['GET'])
 @jwt_required()
