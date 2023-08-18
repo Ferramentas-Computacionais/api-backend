@@ -4,10 +4,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 import os
 from app.database import db
+from app.models.usuario import Usuario
+from app.models.campanha import Campanha
+from app.models.produto import Produto
 from app.models.instituicao import Instituicao
-from app.constants import ADDRESS
+from app.constants import ADDRESS, ID_ADMIN
 from datetime import datetime
 import uuid
+
+
 UPLOAD_FOLDER = 'app/images/logos'
 class InstituicaoController:
     #TODO fazer as funções de edição de instituição para o usuário
@@ -97,3 +102,64 @@ class InstituicaoController:
         else:
             return jsonify({'message': 'O usuário ainda não possui uma instituição registrada'}), 404
 
+    
+    def excluirTudoDoUsuario(self, usuario_id):
+        try:
+            # Excluir campanhas do usuário
+            campanhas = Campanha.query.filter_by(usuario_id=usuario_id).all()
+            for campanha in campanhas:
+                db.session.delete(campanha)
+
+            # Excluir anúncios do usuário
+            produtos = produto.query.filter_by(usuario_id=usuario_id).all()
+            for produto in produtos:
+                db.session.delete(produto)
+
+            # Excluir instituição do usuário
+            instituicao = Instituicao.query.filter_by(usuario_id=usuario_id).first()
+            if instituicao:
+                db.session.delete(instituicao)
+
+            # Excluir o usuário
+            usuario = Usuario.query.get(usuario_id)
+            if usuario:
+                db.session.delete(usuario)
+
+            db.session.commit()
+            return jsonify({'message': 'Tudo do usuário foi excluído com sucesso'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Erro ao excluir tudo do usuário'}), 500
+    def excluirTudoDoUsuario(self, usuario_id):
+        try:
+            # Verificar identidade do usuário
+            current_user_id = get_jwt_identity()
+            
+            if current_user_id != ID_ADMIN:
+                return jsonify({'error': 'Usuário não tem esse poder'}), 400
+
+            # Excluir campanhas do usuário
+            campanhas = Campanha.query.filter_by(usuario_id=usuario_id).all()
+            for campanha in campanhas:
+                db.session.delete(campanha)
+
+            # Excluir anúncios do usuário
+            produtos = Produto.query.filter_by(usuario_id=usuario_id).all()
+            for produto in produtos:
+                db.session.delete(produto)
+
+            # Excluir instituição do usuário
+            instituicao = Instituicao.query.filter_by(usuario_id=usuario_id).first()
+            if instituicao:
+                db.session.delete(instituicao)
+
+            # Excluir o usuário
+            usuario = Usuario.query.get(usuario_id)
+            if usuario:
+                db.session.delete(usuario)
+
+            db.session.commit()
+            return jsonify({'message': 'Tudo do usuário foi excluído com sucesso'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Erro ao excluir tudo do usuário'}), 500

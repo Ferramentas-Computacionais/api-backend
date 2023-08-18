@@ -52,6 +52,12 @@ def create_user():
     user = UsuarioController()
     return user.registrar()
 
+@app.route('/excluir-user/<int:id>', methods= ['POST'])
+@jwt_required()
+def delete_user(id):
+    user = InstituicaoController()
+    return user.excluirTudoDoUsuario(id)
+
 @app.route('/login', methods= ['POST'])
 def login():
     user = UsuarioController()
