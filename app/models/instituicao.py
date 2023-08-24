@@ -8,7 +8,7 @@ class Instituicao(db.Model):
     email = db.Column(db.String(100))
     telefone = db.Column(db.String(13))
     cnpj = db.Column(db.String(14))
-    coordenadas = db.Column(db.String(25))
+    coordenadas = db.Column(db.String(255))
     imagem = db.Column(db.String(255))
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), unique=True)
     descricao = db.Column(db.String(255))
